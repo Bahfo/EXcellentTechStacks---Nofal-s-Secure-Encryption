@@ -1,5 +1,6 @@
 import os
 import time
+import hashlib
 import requests
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, BarColumn, TextColumn
@@ -21,6 +22,17 @@ black_theme = Style.from_dict({
 
 SERVER_URL = "http://127.0.0.1:5000"
 CACHE_DIR = "key_cache"
+
+
+def calculate_file_hash(filepath: str) -> str:
+    """Calculates the SHA-256 checksum of the physical file on disk."""
+    sha256_hash = hashlib.sha256()
+    with open(filepath, "rb") as f:
+        # Read in 4K blocks to maintain a zero-trace memory footprint
+        for byte_block in iter(lambda: f.read(4096), b""):
+            sha256_hash.update(byte_block)
+    return sha256_hash.hexdigest()
+
 
 class OpenBoxTUI:
     def __init__(self):
@@ -183,13 +195,46 @@ class OpenBoxTUI:
             self.stego.embed(img_path, enc_seed, sig, nonce, tag, ct, crypto, "stego_out.png")
             p.update(t2, advance=100)
 
+        final_file_hash = calculate_file_hash("stego_out.png")
+
         console.print("\n[bold green]SUCCESS: Secured Image generated -> stego_out.png[/bold green]")
+        console.print(Panel(
+            f"[bold cyan]Out-of-Band Verification Checksum (SHA-256)[/bold cyan]\n"
+            f"{final_file_hash}\n\n"
+            f"[white]Provide this checksum to the receiver to verify network transit integrity.[/white]",
+            border_style="cyan"
+        ))
         input("\nPress Enter...")
 
     def decrypt_flow(self):
         img_path = input_dialog(title="Extraction", text="Stego Image path:", style=black_theme).run()
+        if not img_path or not os.path.exists(img_path): 
+            return
+
+        current_file_hash = calculate_file_hash(img_path)
+        self.clear()
+        console.print(Panel(
+            f"[bold yellow]Local File Checksum (SHA-256)[/bold yellow]\n"
+            f"{current_file_hash}",
+            border_style="yellow"
+        ))
+        
+        proceed = radiolist_dialog(
+            title="Integrity Check",
+            text="Does this match the sender's provided checksum?",
+            values=[
+                (True,  "Yes, checksum matches. Proceed with extraction."),
+                (False, "No/Skip, proceed at own risk."),
+                (None,  "Abort extraction.")
+            ], style=black_theme
+        ).run()
+
+        if proceed is None: 
+            return
+
         sender_username = input_dialog(title="Verify", text="Enter Sender's Username:", style=black_theme).run()
-        if not img_path or not sender_username: return
+        if not sender_username: 
+            return
 
         sender_pub_path = self.resolve_public_key(sender_username)
         if not sender_pub_path:
@@ -201,11 +246,10 @@ class OpenBoxTUI:
             t1 = p.add_task("Parsing IWT Frequencies...", total=100)
             ct_len, enc_seed, sig, hh_flat = self.stego.extract(img_path, crypto=None)
             p.update(t1, advance=100)
-
+            
             t2 = p.add_task("Cryptographic Unpacking & Verification...", total=100)
             try:
                 crypto = OpenBoxCrypto() 
-
                 crypto.decapsulate_seed(enc_seed, self.current_priv_key)
                 nonce, tag, ct = self.stego.extract_chaotic_payload(hh_flat, ct_len, crypto)
                 plaintext = crypto.verify_and_decrypt_payload(sig, nonce, tag, ct, sender_pub_path)
@@ -214,9 +258,11 @@ class OpenBoxTUI:
                 
                 console.print("\n[bold green]DOCUMENT AUTHENTICATED & EXTRACTED[/bold green]")
                 console.print(Panel(plaintext, border_style="green"))
+                
             except ValueError as e:
                 console.print(f"\n[bold red]SECURITY HALT: {e}[/bold red]")
-        input("\nPress Enter...")
+                
+        input("\nPress Enter to return to menu...")
 
 if __name__ == "__main__":
     OpenBoxTUI().run()

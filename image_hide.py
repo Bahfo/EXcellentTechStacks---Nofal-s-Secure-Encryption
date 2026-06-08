@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image
 
-class IWTStego:
+class IWTStego: # Integer Wavelength Transform
     @staticmethod
     def _forward_iwt(img: np.ndarray):
         h, w = img.shape

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSE Framework</title>
+    <style>
+        :root {
+            --ms-blue: #0067b8;
+            --ms-blue-hover: #005da6;
+            --text-dark: #242424;
+            --text-light: #616161;
+            --bg-light: #f2f2f2;
+            --font-family: 'Segoe UI', 'Segoe UI Web (West European)', 
+                'Roboto', 'Helvetica Neue', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            color: var(--text-dark);
+            line-height: 1.5;
+            background-color: #ffffff;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: 2px solid transparent;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--ms-blue);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--ms-blue-hover);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .hero {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 60vh;
+            padding: 4rem 5%;
+            margin-bottom: 3rem;
+            background: linear-gradient(rgba(242, 242, 242, 0.85), rgba(242, 242, 242, 0.95)), 
+                        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #000;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .content-section {
+            margin-bottom: 4rem;
+        }
+
+        .content-intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 3rem auto;
+            font-size: 1.1rem;
+        }
+
+        .cards-wrapper {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+            background: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #e6e6e6;
+            transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden; 
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 200px;
+            background-color: #d2d2d2;
+            background-size: cover;
+            background-position: center;
+            display: block;
+        }
+
+        /* Fixed, highly stable public image links */
+        .card-img-confidentiality {
+            /* Secure abstract lock illustration */
+            background-image: url('https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .card-img-security {
+            /* Healthcare tech/records background */
+            background-image: url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .card-content {
+            padding: 24px;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .card a {
+            color: var(--ms-blue);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .card a:hover {
+            text-decoration: underline;
+        }
+
+        .download-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            background-color: var(--bg-light);
+            margin-bottom: 0;
+        }
+
+        .download-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .download-section p {
+            margin-bottom: 2rem;
+            color: var(--text-light);
+        }
+
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="container">
+            <h1>The Secure and Authenticated Way of Encryption</h1>
+            <p>Hide your data securely with NSE (Nofal's Secure Encryption) and keep your medical records safe.</p>
+            <a href="#download" class="btn btn-primary">Get Started</a>
+        </div>
+    </section>
+
+    <section class="content-section container">
+        <p class="content-intro">
+            Your privacy matters the most. NSE offers secure encryption and authenticated ways of keeping you safe.
+        </p>
+
+        <div class="cards-wrapper">
+            <div class="card">
+                <div class="card-img card-img-confidentiality"></div>
+                <div class="card-content">
+                    <h3>Confidentiality</h3>
+                    <p>Build your trust knowing that you are backed with confidentiality standards.</p>
+                    <a href="#">Learn more &gt;</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img card-img-security"></div>
+                <div class="card-content">
+                    <h3>Data Security</h3>
+                    <p>Your medical records are always safe and kept secure with NSE Core.</p>
+                    <a href="#">Learn more &gt;</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="download" class="download-section">
+        <div class="container">
+            <h2>Install the Framework's source code?</h2>
+            <p>Download the latest release package to your local machine.</p>
+            
+            <a href="openbox-release.zip" download="openbox-release.zip" class="btn btn-primary">Download .zip</a>
+        </div>
+    </section>
+
+</body>
+</html>
