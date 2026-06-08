@@ -27,8 +27,20 @@ def run_real_image_test(input_image_path, output_image_path):
 
     print("--- STEP 2: EMBEDDING INTO IMAGE FREQUENCY DOMAIN ---")
     stego_sys = IWTransformEngine()
-    
     stego_sys.embed_data(input_image_path, ciphertext, nonce, auth_tag, crypto, output_image_path)
+    
+    # === DIAGNOSTIC INSERTION POINT ===
+    print("\n--- DIAGNOSTIC: INTEGRITY CHECK ---")
+    ex_ciphertext, ex_nonce, ex_tag = stego_sys.extract_data(output_image_path, crypto)
+
+    print(f"Original Ciphertext Hex Matches Extracted? : {ciphertext == ex_ciphertext}")
+    if ciphertext != ex_ciphertext:
+        print(f" -> Orig: {ciphertext.hex().upper()[:30]}...")
+        print(f" -> Extr: {ex_ciphertext.hex().upper()[:30]}...")
+
+    print(f"Original Nonce Hex Matches Extracted?      : {nonce == ex_nonce}")
+    print(f"Original Auth Tag Hex Matches Extracted?   : {auth_tag == ex_tag}")
+    print("-----------------------------------\n")
     
     print("\n--- STEP 3: REVERSE EXTRACTION & VALIDATION ---")
     ex_ciphertext, ex_nonce, ex_tag = stego_sys.extract_data(output_image_path, crypto)
